@@ -108,10 +108,10 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 **Tujuan:** Menyelesaikan fitur input nilai berkecepatan tinggi, akses data EMIS berbasis peran (RBAC), dan fitur penyelamatan data darurat.
 
 ### 6.1 Modul Penilaian K13 & In-Memory Grid (`ui/screens/grading/`)
-- [ ] Buat `GradingOverviewScreen.kt` dengan tab pemisah `KI-3 Pengetahuan`, `KI-4 Keterampilan`, dan `Rekap Nilai Akhir`, dilengkapi dialog **"+ Tambah Kolom Nilai"** (Tugas, UH, PAS/PAT, Praktik, Proyek, Portofolio).
-- [ ] Buat `GradingEntryScreen.kt` & `GradingViewModel.kt` menggunakan buffer `mutableStateMapOf<String, String>()` untuk input vertikal cepat (`KeyboardType.Decimal`, `ImeAction.Next`) tanpa *recomposition lag*.
-- [ ] Tampilkan kalkulasi otomatis Nilai Akhir, warna indikator ketuntasan KKM, dan badge Predikat (`A`/`B`/`C`/`D`) di tab Rekap Nilai Akhir.
-- [ ] Buat `CsvExporter.kt` dan integrasikan tombol **"Ekspor Rekap Nilai (.CSV)"** menggunakan Storage Access Framework.
+- [x] Buat `GradingOverviewScreen.kt` dengan tab pemisah `KI-3 Pengetahuan`, `KI-4 Keterampilan`, dan `Rekap Nilai Akhir`, dilengkapi dialog **"+ Tambah Kolom Nilai"** (Tugas, UH, PAS/PAT, Praktik, Proyek, Portofolio).
+- [x] Buat `GradingEntryScreen.kt` & `GradingViewModel.kt` menggunakan buffer `mutableStateMapOf<String, String>()` untuk input vertikal cepat (`KeyboardType.Decimal`, `ImeAction.Next`) tanpa *recomposition lag*.
+- [x] Tampilkan kalkulasi otomatis Nilai Akhir, warna indikator ketuntasan KKM, dan badge Predikat (`A`/`B`/`C`/`D`) di tab Rekap Nilai Akhir.
+- [x] Buat `CsvExporter.kt` dan integrasikan tombol **"Ekspor Rekap Nilai (.CSV)"** menggunakan Storage Access Framework.
 
 ### 6.2 Direktori Siswa & Segmentasi RBAC EMIS (`ui/screens/students/`)
 - [ ] Buat `StudentListScreen.kt` untuk melihat daftar siswa per kelas (`7A`, `7B`, `8A`, `8B`, `9A`, `9B`) beserta foto profil `.webp` via Coil.
