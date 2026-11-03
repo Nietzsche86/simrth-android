@@ -43,9 +43,9 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 - [x] Buat `GradingDao.kt` dengan fungsi `@Transaction saveBatchGradesAndOutbox(...)` serta pengelolaan `KomponenNilaiEntity`.
 
 ### 2.3 Inisialisasi Database & Koin Module (`data/local/db/` & `di/`)
-- [ ] Buat `AppDatabase.kt` (`simrth_k13.db`) dengan konfigurasi `JournalMode.WRITE_AHEAD_LOGGING` dan `DbMigrations.kt`.
-- [ ] Buat `DatabaseModule.kt` untuk menyediakan instance `AppDatabase` dan seluruh DAO via Koin.
-- [ ] Buat unit test `OutboxCoalescingLogicTest.kt` dan verifikasi kelulusan KSP Room di GitHub Actions.
+- [x] Buat `AppDatabase.kt` (`simrth_k13.db`) dengan konfigurasi `JournalMode.WRITE_AHEAD_LOGGING` dan `DbMigrations.kt`.
+- [x] Buat `DatabaseModule.kt` untuk menyediakan instance `AppDatabase` dan seluruh DAO via Koin.
+- [x] Buat unit test `OutboxCoalescingLogicTest.kt` dan verifikasi kelulusan KSP Room di GitHub Actions.
 
 ---
 
