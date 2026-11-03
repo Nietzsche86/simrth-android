@@ -19,6 +19,9 @@ abstract class GradingDao {
     @Query("SELECT * FROM kkm_mapel WHERE mapelId = :mapelId AND tingkatKelas = :tingkatKelas AND tahunAjaranId = :tahunAjaranId AND isDeleted = 0 LIMIT 1")
     abstract suspend fun getKkmSync(mapelId: String, tingkatKelas: Int, tahunAjaranId: String): KkmMapelEntity?
 
+    @Query("SELECT * FROM kkm_mapel WHERE tahunAjaranId = :tahunAjaranId AND isDeleted = 0")
+    abstract fun getAllKkmByTahunAjaran(tahunAjaranId: String): Flow<List<KkmMapelEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun upsertKkm(entities: List<KkmMapelEntity>)
 

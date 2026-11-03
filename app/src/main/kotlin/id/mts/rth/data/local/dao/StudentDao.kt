@@ -49,6 +49,9 @@ interface StudentDao {
     @Query("SELECT * FROM anggota_rombel WHERE kelasId = :kelasId AND tahunAjaranId = :tahunAjaranId AND isDeleted = 0 ORDER BY nomorAbsen ASC")
     fun getAnggotaRombelByKelas(kelasId: String, tahunAjaranId: String): Flow<List<AnggotaRombelEntity>>
 
+    @Query("SELECT * FROM anggota_rombel WHERE kelasId = :kelasId AND tahunAjaranId = :tahunAjaranId AND isDeleted = 0 ORDER BY nomorAbsen ASC")
+    suspend fun getAnggotaRombelByKelasSync(kelasId: String, tahunAjaranId: String): List<AnggotaRombelEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAnggotaRombel(entities: List<AnggotaRombelEntity>)
 }

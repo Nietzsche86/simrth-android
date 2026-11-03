@@ -118,8 +118,8 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 - [x] Buat `StudentEmisDetailScreen.kt` yang **hanya dapat diakses oleh Wali Kelas (untuk kelas binaannya) dan Admin**, menampilkan data lengkap EMIS (NIK, KK, Alamat, Orang Tua, KIP) dan tombol pintas WhatsApp Orang Tua (`Intent.ACTION_VIEW` ke `https://wa.me/62...`).
 
 ### 6.3 Fitur Khusus Admin (`ui/screens/admin/`)
-- [ ] Buat `KkmConfigScreen.kt` bagi Admin untuk mengubah nilai KKM dan bobot penilaian per mata pelajaran/tingkat kelas.
-- [ ] Buat `LifecycleMutationScreen.kt` bagi Admin untuk mengeksekusi kenaikan kelas dan kelulusan rombel.
+- [x] Buat `KkmConfigScreen.kt` bagi Admin untuk mengubah nilai KKM dan bobot penilaian per mata pelajaran/tingkat kelas.
+- [x] Buat `LifecycleMutationScreen.kt` bagi Admin untuk mengeksekusi kenaikan kelas dan kelulusan rombel.
 
 ---
 
