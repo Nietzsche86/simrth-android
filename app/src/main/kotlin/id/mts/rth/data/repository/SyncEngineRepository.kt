@@ -7,7 +7,6 @@ import id.mts.rth.core.common.ResultState
 import id.mts.rth.core.media.StudentPhotoManager
 import id.mts.rth.core.security.SessionPreferences
 import id.mts.rth.data.local.db.AppDatabase
-import id.mts.rth.data.local.entity.AcademicEntities.*
 import id.mts.rth.data.local.entity.AnggotaRombelEntity
 import id.mts.rth.data.local.entity.GuruEntity
 import id.mts.rth.data.local.entity.KelasEntity
