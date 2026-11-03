@@ -127,8 +127,8 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 **Tujuan:** Menyatukan seluruh layar dalam grafik navigasi tunggal dan menghasilkan APK siap pakai dari GitHub Actions.
 
 ### 7.1 Navigasi & Dependency Injection Penuh
-- [ ] Lengkapi `AppNavHost.kt` dan `ScreenRoutes.kt` dengan penjagaan rute berdasarkan status sesi login/PIN dan Role pengguna.
-- [ ] Daftarkan seluruh Repository dan ViewModel di `RepositoryModule.kt` dan `ViewModelModule.kt` serta inisialisasi Koin di `SimrthApp.kt`.
+- [x] Lengkapi `AppNavHost.kt` dan `ScreenRoutes.kt` dengan penjagaan rute berdasarkan status sesi login/PIN dan Role pengguna.
+- [x] Daftarkan seluruh Repository dan ViewModel di `RepositoryModule.kt` dan `ViewModelModule.kt` serta inisialisasi Koin di `SimrthApp.kt`.
 
 ### 7.2 Verifikasi Kualitas & Optimasi Rilis di GitHub Actions
 - [ ] Konfigurasi `proguard-rules.pro` agar model serialisasi JSON (`id.mts.rth.data.remote.dto.**`) dan entitas Room (`id.mts.rth.data.local.entity.**`) tidak terhapus oleh R8 saat build release.

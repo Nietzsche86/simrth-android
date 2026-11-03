@@ -77,7 +77,9 @@ fun HomeScreen(
     onNavigateToAttendance: (kelasId: String, mapelId: String) -> Unit = { _, _ -> },
     onNavigateToGrading: (kelasId: String, mapelId: String) -> Unit = { _, _ -> },
     onNavigateToStudents: () -> Unit = {},
-    onNavigateToPinLock: () -> Unit = {}
+    onNavigateToPinLock: () -> Unit = {},
+    onNavigateToKkmConfig: () -> Unit = {},
+    onNavigateToMutation: () -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     var showAllTeaching by remember { mutableStateOf(false) }
@@ -241,6 +243,37 @@ fun HomeScreen(
                     modifier = Modifier.weight(1f),
                     onClick = onNavigateToPinLock
                 )
+            }
+
+            // Pintasan Administrator Madrasah (Khusus Peran ADMIN)
+            if (state.userRole.equals("ADMIN", ignoreCase = true)) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Menu Khusus Administrator",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Button(
+                        onClick = onNavigateToKkmConfig,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = EmeraldTeal)
+                    ) {
+                        Text(text = "Atur KKM & Bobot", fontSize = 12.sp)
+                    }
+
+                    OutlinedButton(
+                        onClick = onNavigateToMutation,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Text(text = "Mutasi Kesiswaan", fontSize = 12.sp)
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
