@@ -89,9 +89,9 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 **Tujuan:** Membangun pengalaman pengguna di ruang kelas MTs Roudhotut Thowalib yang responsif, jelas, dan instan.
 
 ### 5.1 Tema Material 3 & Komponen Bersama (`ui/theme/` & `ui/components/`)
-- [ ] Buat `Color.kt`, `Type.kt`, dan `Theme.kt` dengan palet **Emerald Madrasah** (`#0F766E`) dan warna semantik presensi/KKM.
-- [ ] Buat `SyncTopAppBar.kt` yang menampilkan identitas **SIMRTH**, status antrean outbox secara reaktif, beserta tombol **"Sinkronkan Sekarang"**.
-- [ ] Buat `PinNumPad.kt` untuk layar masuk cepat di ruang kelas.
+- [x] Buat `Color.kt`, `Type.kt`, dan `Theme.kt` dengan palet **Emerald Madrasah** (`#0F766E`) dan warna semantik presensi/KKM.
+- [x] Buat `SyncTopAppBar.kt` yang menampilkan identitas **SIMRTH**, status antrean outbox secara reaktif, beserta tombol **"Sinkronkan Sekarang"**.
+- [x] Buat `PinNumPad.kt` untuk layar masuk cepat di ruang kelas.
 
 ### 5.2 Alur Autentikasi & Beranda (`ui/screens/auth/` & `ui/screens/home/`)
 - [ ] Buat `InitialSetupScreen.kt` (input IP Server lokal, NIP/Username, Password, pembuatan 6-digit PIN baru, dan indikator progres *Initial Seed*).
