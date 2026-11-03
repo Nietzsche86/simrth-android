@@ -78,10 +78,10 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 - [x] Buat `NetworkModule.kt` di paket `id.mts.rth.di`.
 
 ### 4.2 Orkestrator Sinkronisasi 3 Tahap (`data/repository/SyncEngineRepository.kt`)
-- [ ] Implementasikan pengecekan `/api/v1/health` (timeout $3.000\text{ ms}$) sekaligus validasi *Clock Drift* ($|\Delta t| \le 5\text{ menit}$).
-- [ ] Implementasikan **Tahap 1 (Push Outbox):** pengiriman batch maksimal 250 mutasi dan penghapusan record outbox yang sukses diterima server.
-- [ ] Implementasikan **Tahap 2 (Pull Delta):** pengambilan pembaruan server berdasarkan `lastSyncTimestamp` dan `@Transaction` upsert ke Room (tanpa menimpa record yang masih ada di `sync_outbox` lokal).
-- [ ] Implementasikan **Tahap 3 (Media Sync) `StudentPhotoManager.kt`:** kompresi foto WebP ($300 \times 300\text{ px}$, $\le 25\text{ KB}$, kompatibel API 26--35) di `context.filesDir/students/` dan pengunduhan foto siswa secara background.
+- [x] Implementasikan pengecekan `/api/v1/health` (timeout $3.000\text{ ms}$) sekaligus validasi *Clock Drift* ($|\Delta t| \le 5\text{ menit}$).
+- [x] Implementasikan **Tahap 1 (Push Outbox):** pengiriman batch maksimal 250 mutasi dan penghapusan record outbox yang sukses diterima server.
+- [x] Implementasikan **Tahap 2 (Pull Delta):** pengambilan pembaruan server berdasarkan `lastSyncTimestamp` dan `@Transaction` upsert ke Room (tanpa menimpa record yang masih ada di `sync_outbox` lokal).
+- [x] Implementasikan **Tahap 3 (Media Sync) `StudentPhotoManager.kt`:** kompresi foto WebP ($300 \times 300\text{ px}$, $\le 25\text{ KB}$, kompatibel API 26--35) di `context.filesDir/students/` dan pengunduhan foto siswa secara background.
 
 ---
 
