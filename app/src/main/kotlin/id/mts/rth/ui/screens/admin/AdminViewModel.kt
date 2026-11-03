@@ -98,13 +98,21 @@ class AdminViewModel(
     }
 
     val mutationState: StateFlow<LifecycleMutationUiState> = combine(
-        academicRepository.getAllKelas(),
-        _mutationSourceKelasId,
-        _mutationTargetKelasId,
-        _mutationType,
-        sourceStudentsFlow,
-        _selectedStudentIds
-    ) { kelasList, sourceId, targetId, mutType, students, selectedIds ->
+        combine(
+            academicRepository.getAllKelas(),
+            _mutationSourceKelasId,
+            _mutationTargetKelasId
+        ) { kelasList, sourceId, targetId ->
+            Triple(kelasList, sourceId, targetId)
+        },
+        combine(
+            _mutationType,
+            sourceStudentsFlow,
+            _selectedStudentIds
+        ) { mutType, students, selectedIds ->
+            Triple(mutType, students, selectedIds)
+        }
+    ) { (kelasList, sourceId, targetId), (mutType, students, selectedIds) ->
         val resolvedSourceId = if (sourceId.isBlank() && kelasList.isNotEmpty()) {
             kelasList.first().id
         } else {
