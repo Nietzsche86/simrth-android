@@ -114,8 +114,8 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 - [x] Buat `CsvExporter.kt` dan integrasikan tombol **"Ekspor Rekap Nilai (.CSV)"** menggunakan Storage Access Framework.
 
 ### 6.2 Direktori Siswa & Segmentasi RBAC EMIS (`ui/screens/students/`)
-- [ ] Buat `StudentListScreen.kt` untuk melihat daftar siswa per kelas (`7A`, `7B`, `8A`, `8B`, `9A`, `9B`) beserta foto profil `.webp` via Coil.
-- [ ] Buat `StudentEmisDetailScreen.kt` yang **hanya dapat diakses oleh Wali Kelas (untuk kelas binaannya) dan Admin**, menampilkan data lengkap EMIS (NIK, KK, Alamat, Orang Tua, KIP) dan tombol pintas WhatsApp Orang Tua (`Intent.ACTION_VIEW` ke `https://wa.me/62...`).
+- [x] Buat `StudentListScreen.kt` untuk melihat daftar siswa per kelas (`7A`, `7B`, `8A`, `8B`, `9A`, `9B`) beserta foto profil `.webp` via Coil.
+- [x] Buat `StudentEmisDetailScreen.kt` yang **hanya dapat diakses oleh Wali Kelas (untuk kelas binaannya) dan Admin**, menampilkan data lengkap EMIS (NIK, KK, Alamat, Orang Tua, KIP) dan tombol pintas WhatsApp Orang Tua (`Intent.ACTION_VIEW` ke `https://wa.me/62...`).
 
 ### 6.3 Fitur Khusus Admin (`ui/screens/admin/`)
 - [ ] Buat `KkmConfigScreen.kt` bagi Admin untuk mengubah nilai KKM dan bobot penilaian per mata pelajaran/tingkat kelas.
