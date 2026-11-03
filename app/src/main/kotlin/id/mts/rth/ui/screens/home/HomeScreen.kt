@@ -57,7 +57,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import id.mts.rth.ui.components.SyncTopAppBar
-import id.mts.rth.ui.theme.EmeraldLight
 import id.mts.rth.ui.theme.EmeraldTeal
 import id.mts.rth.ui.theme.StatusAlpha
 import id.mts.rth.ui.theme.StatusAlphaContainer

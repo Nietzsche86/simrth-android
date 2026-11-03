@@ -96,8 +96,10 @@ class HomeViewModel(
             flowOf(emptyList())
         } else if (session.activeRole.equals("ADMIN", ignoreCase = true)) {
             academicRepository.getPenugasanByTahunAjaran(tahun.id)
-        } else {
+        } else if (!session.userId.isNullOrBlank()) {
             academicRepository.getPenugasanByGuru(session.userId, tahun.id)
+        } else {
+            flowOf(emptyList())
         }
     }
 
