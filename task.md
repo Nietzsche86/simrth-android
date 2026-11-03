@@ -29,11 +29,11 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 **Tujuan:** Mengimplementasikan seluruh 14 entitas data sesuai standar EMIS & K13 beserta mekanisme antrean sinkronisasi anti-duplikat di paket `id.mts.rth.data.local`.
 
 ### 2.1 Implementasi Entitas Room (`data/local/entity/`)
-- [ ] Buat `AcademicEntities.kt` (`TahunAjaranEntity`, `GuruEntity`, `KelasEntity`, `MapelEntity`, `PenugasanGuruEntity`) lengkap dengan `isDeleted` dan `updatedAt`.
-- [ ] Buat `StudentEntities.kt` (`SiswaCoreEntity`, `SiswaDetailEntity`, `AnggotaRombelEntity`) dengan indeks unik yang sesuai.
-- [ ] Buat `AttendanceEntities.kt` (`PresensiSesiEntity`, `PresensiDetailEntity`).
-- [ ] Buat `GradingEntities.kt` (`KkmMapelEntity`, `KomponenNilaiEntity`, `NilaiSiswaEntity`).
-- [ ] Buat `SyncOutboxEntity.kt` dengan indeks unik komposit pada `(tableNameTarget, recordId)`.
+- [x] Buat `AcademicEntities.kt` (`TahunAjaranEntity`, `GuruEntity`, `KelasEntity`, `MapelEntity`, `PenugasanGuruEntity`) lengkap dengan `isDeleted` dan `updatedAt`.
+- [x] Buat `StudentEntities.kt` (`SiswaCoreEntity`, `SiswaDetailEntity`, `AnggotaRombelEntity`) dengan indeks unik yang sesuai.
+- [x] Buat `AttendanceEntities.kt` (`PresensiSesiEntity`, `PresensiDetailEntity`).
+- [x] Buat `GradingEntities.kt` (`KkmMapelEntity`, `KomponenNilaiEntity`, `NilaiSiswaEntity`).
+- [x] Buat `SyncOutboxEntity.kt` dengan indeks unik komposit pada `(tableNameTarget, recordId)`.
 
 ### 2.2 Implementasi DAO & Coalescing Transaction (`data/local/dao/`)
 - [ ] Buat `SyncOutboxDao.kt` lengkap dengan fungsi `@Transaction recordMutationWithCoalescing(...)` dan query antrean berurut berdasarkan `priorityOrder ASC, createdAt ASC`.
