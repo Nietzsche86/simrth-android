@@ -57,6 +57,9 @@ interface MasterAcademicDao {
     @Query("SELECT * FROM penugasan_guru WHERE guruId = :guruId AND tahunAjaranId = :tahunAjaranId AND isDeleted = 0")
     fun getPenugasanByGuru(guruId: String, tahunAjaranId: String): Flow<List<PenugasanGuruEntity>>
 
+    @Query("SELECT * FROM penugasan_guru WHERE tahunAjaranId = :tahunAjaranId AND isDeleted = 0")
+    fun getPenugasanByTahunAjaran(tahunAjaranId: String): Flow<List<PenugasanGuruEntity>>
+
     @Query("SELECT * FROM penugasan_guru WHERE id = :id AND isDeleted = 0 LIMIT 1")
     suspend fun getPenugasanById(id: String): PenugasanGuruEntity?
 

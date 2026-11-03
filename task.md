@@ -94,9 +94,9 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 - [x] Buat `PinNumPad.kt` untuk layar masuk cepat di ruang kelas.
 
 ### 5.2 Alur Autentikasi & Beranda (`ui/screens/auth/` & `ui/screens/home/`)
-- [ ] Buat `InitialSetupScreen.kt` (input IP Server lokal, NIP/Username, Password, pembuatan 6-digit PIN baru, dan indikator progres *Initial Seed*).
-- [ ] Buat `PinLockScreen.kt` untuk verifikasi PIN offline harian beserta proteksi *lockout* $5\times$ salah.
-- [ ] Buat `HomeScreen.kt` & `HomeViewModel.kt` yang menampilkan daftar jam mengajar aktif hari ini, ringkasan outbox, dan pintasan langsung ke presensi kelas.
+- [x] Buat `InitialSetupScreen.kt` (input IP Server lokal, NIP/Username, Password, pembuatan 6-digit PIN baru, dan indikator progres *Initial Seed*).
+- [x] Buat `PinLockScreen.kt` untuk verifikasi PIN offline harian beserta proteksi *lockout* $5\times$ salah.
+- [x] Buat `HomeScreen.kt` & `HomeViewModel.kt` yang menampilkan daftar jam mengajar aktif hari ini, ringkasan outbox, dan pintasan langsung ke presensi kelas.
 
 ### 5.3 Fast Attendance Engine (`ui/screens/attendance/`)
 - [ ] Buat `AttendanceRowItem.kt` yang mendukung *single-tap sequential rotation* ($\text{H} \rightarrow \text{S} \rightarrow \text{I} \rightarrow \text{A} \rightarrow \text{H}$) dengan perubahan warna instan.
