@@ -99,8 +99,8 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 - [x] Buat `HomeScreen.kt` & `HomeViewModel.kt` yang menampilkan daftar jam mengajar aktif hari ini, ringkasan outbox, dan pintasan langsung ke presensi kelas.
 
 ### 5.3 Fast Attendance Engine (`ui/screens/attendance/`)
-- [ ] Buat `AttendanceRowItem.kt` yang mendukung *single-tap sequential rotation* ($\text{H} \rightarrow \text{S} \rightarrow \text{I} \rightarrow \text{A} \rightarrow \text{H}$) dengan perubahan warna instan.
-- [ ] Buat `AttendanceScreen.kt` & `AttendanceViewModel.kt` dengan default seluruh siswa `Hadir (H)`, kolom input singkat materi jurnal mengajar, dan tombol **"Simpan Presensi"** (*Optimistic UI*).
+- [x] Buat `AttendanceRowItem.kt` yang mendukung *single-tap sequential rotation* ($\text{H} \rightarrow \text{S} \rightarrow \text{I} \rightarrow \text{A} \rightarrow \text{H}$) dengan perubahan warna instan.
+- [x] Buat `AttendanceScreen.kt` & `AttendanceViewModel.kt` dengan default seluruh siswa `Hadir (H)`, kolom input singkat materi jurnal mengajar, dan tombol **"Simpan Presensi"** (*Optimistic UI*).
 
 ---
 
