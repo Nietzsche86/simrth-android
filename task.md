@@ -72,10 +72,10 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 **Tujuan:** Menghubungkan aplikasi SIMRTH dengan server lokal Wi-Fi MTs Roudhotut Thowalib secara aman dan efisien.
 
 ### 4.1 Ktor Client & Keamanan Subnet (`data/remote/`)
-- [ ] Buat `LanSecurityInterceptor.kt` yang memastikan request HTTP cleartext hanya diizinkan menuju IP Private (RFC 1918) atau domain `.local` (`simrth.local`).
-- [ ] Buat DTO serialisasi di `data/remote/dto/` (`AuthDto.kt`, `SyncPushDto.kt`, `SyncPullDto.kt`).
-- [ ] Buat `AuthApiService.kt` (endpoint login + initial seed snapshot) dan `SyncApiService.kt` (endpoint `/health`, `/sync/push`, `/sync/pull`, dan unduh foto).
-- [ ] Buat `NetworkModule.kt` di paket `id.mts.rth.di`.
+- [x] Buat `LanSecurityInterceptor.kt` yang memastikan request HTTP cleartext hanya diizinkan menuju IP Private (RFC 1918) atau domain `.local` (`simrth.local`).
+- [x] Buat DTO serialisasi di `data/remote/dto/` (`AuthDto.kt`, `SyncPushDto.kt`, `SyncPullDto.kt`).
+- [x] Buat `AuthApiService.kt` (endpoint login + initial seed snapshot) dan `SyncApiService.kt` (endpoint `/health`, `/sync/push`, `/sync/pull`, dan unduh foto).
+- [x] Buat `NetworkModule.kt` di paket `id.mts.rth.di`.
 
 ### 4.2 Orkestrator Sinkronisasi 3 Tahap (`data/repository/SyncEngineRepository.kt`)
 - [ ] Implementasikan pengecekan `/api/v1/health` (timeout $3.000\text{ ms}$) sekaligus validasi *Clock Drift* ($|\Delta t| \le 5\text{ menit}$).
