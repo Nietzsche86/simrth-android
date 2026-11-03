@@ -62,9 +62,9 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 - [x] Buat unit test `K13GradeCalculatorTest.kt` di `app/src/test/kotlin/id/mts/rth/domain/calculator/` yang menguji berbagai skenario nilai KKM ($70, 75, 78, 80$) dan komponen ujian yang belum terisi.
 
 ### 3.2 Keamanan PIN Offline & Sesi (`core/security/`)
-- [ ] Buat `PinCryptoManager.kt` menggunakan `PBKDF2WithHmacSHA256` ($10.000$ iterasi, 16-byte random salt).
-- [ ] Buat `SessionPreferences.kt` berbasis Jetpack `DataStore<Preferences>` untuk menyimpan IP Server, JWT Token, Role aktif, Hash PIN, Salt, `lastSyncTimestamp`, dan penghitung gagal PIN (maksimal $5\times$).
-- [ ] Buat unit test `PinCryptoManagerTest.kt` untuk memverifikasi akurasi hash dan pencocokan PIN di GitHub Actions.
+- [x] Buat `PinCryptoManager.kt` menggunakan `PBKDF2WithHmacSHA256` ($10.000$ iterasi, 16-byte random salt).
+- [x] Buat `SessionPreferences.kt` berbasis Jetpack `DataStore<Preferences>` untuk menyimpan IP Server, JWT Token, Role aktif, Hash PIN, Salt, `lastSyncTimestamp`, dan penghitung gagal PIN (maksimal $5\times$).
+- [x] Buat unit test `PinCryptoManagerTest.kt` untuk memverifikasi akurasi hash dan pencocokan PIN di GitHub Actions.
 
 ---
 
