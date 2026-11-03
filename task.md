@@ -36,11 +36,11 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 - [x] Buat `SyncOutboxEntity.kt` dengan indeks unik komposit pada `(tableNameTarget, recordId)`.
 
 ### 2.2 Implementasi DAO & Coalescing Transaction (`data/local/dao/`)
-- [ ] Buat `SyncOutboxDao.kt` lengkap dengan fungsi `@Transaction recordMutationWithCoalescing(...)` dan query antrean berurut berdasarkan `priorityOrder ASC, createdAt ASC`.
-- [ ] Buat `MasterAcademicDao.kt` untuk pembacaan jadwal aktif, kelas, mapel, dan tahun ajaran menggunakan `Flow`.
-- [ ] Buat `StudentDao.kt` dengan pemisahan query `getSiswaCoreByKelas(...)` (untuk semua guru) dan `getSiswaDetailById(...)` (khusus Wali Kelas/Admin).
-- [ ] Buat `AttendanceDao.kt` dengan fungsi `@Transaction saveAttendanceSessionAndOutbox(...)`.
-- [ ] Buat `GradingDao.kt` dengan fungsi `@Transaction saveBatchGradesAndOutbox(...)` serta pengelolaan `KomponenNilaiEntity`.
+- [x] Buat `SyncOutboxDao.kt` lengkap dengan fungsi `@Transaction recordMutationWithCoalescing(...)` dan query antrean berurut berdasarkan `priorityOrder ASC, createdAt ASC`.
+- [x] Buat `MasterAcademicDao.kt` untuk pembacaan jadwal aktif, kelas, mapel, dan tahun ajaran menggunakan `Flow`.
+- [x] Buat `StudentDao.kt` dengan pemisahan query `getSiswaCoreByKelas(...)` (untuk semua guru) dan `getSiswaDetailById(...)` (khusus Wali Kelas/Admin).
+- [x] Buat `AttendanceDao.kt` dengan fungsi `@Transaction saveAttendanceSessionAndOutbox(...)`.
+- [x] Buat `GradingDao.kt` dengan fungsi `@Transaction saveBatchGradesAndOutbox(...)` serta pengelolaan `KomponenNilaiEntity`.
 
 ### 2.3 Inisialisasi Database & Koin Module (`data/local/db/` & `di/`)
 - [ ] Buat `AppDatabase.kt` (`simrth_k13.db`) dengan konfigurasi `JournalMode.WRITE_AHEAD_LOGGING` dan `DbMigrations.kt`.
