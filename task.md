@@ -20,8 +20,8 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 - [x] Buat kerangka dasar `SimrthApp.kt` dan `MainActivity.kt` di dalam paket `app/src/main/kotlin/id/mts/rth/`.
 
 ### 1.3 Pipeline GitHub Actions (Cloud Compiler untuk Termux)
-- [ ] Buat `.github/workflows/android-ci.yml` yang menggunakan `actions/setup-java@v4` (Temurin 17) dan `gradle/actions/setup-gradle@v4` (`gradle-version: 8.10.2`), menjalankan `gradle testDebugUnitTest assembleDebug`, serta mengunggah artefak `simrth-debug-apk` menggunakan `actions/upload-artifact@v4`.
-- [ ] Lakukan push ke GitHub dan verifikasi build pertama sukses menggunakan `gh run watch`.
+- [x] Buat `.github/workflows/android-ci.yml` yang menggunakan `actions/setup-java@v4` (Temurin 17) dan `gradle/actions/setup-gradle@v4` (`gradle-version: 8.10.2`), menjalankan `gradle testDebugUnitTest assembleDebug`, serta mengunggah artefak `simrth-debug-apk` menggunakan `actions/upload-artifact@v4`.
+- [x] Lakukan push ke GitHub dan verifikasi build pertama sukses menggunakan `gh run watch`.
 
 ---
 
