@@ -43,9 +43,9 @@ object K13GradeCalculator {
             activeWeightSum += bobotHarian
         }
 
-        if (avgUh != null && bobotUh > 0) {
-            totalWeightedScore += avgUh * bobotUh
-            activeWeightSum += bobotUh
+        if (avgUh != null && bobotUlangan > 0) {
+            totalWeightedScore += avgUh * bobotUlangan
+            activeWeightSum += bobotUlangan
         }
 
         if (pasScore != null && bobotUjianAkhir > 0) {
