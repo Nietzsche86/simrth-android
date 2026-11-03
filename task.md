@@ -53,13 +53,13 @@ Gunakan dokumen ini sebagai daftar periksa (*checklist*) eksekusi bertahap untuk
 **Tujuan:** Membangun mesin kalkulasi nilai K13 dan sistem keamanan PIN offline yang teruji dengan Unit Test $100\%$ di CI.
 
 ### 3.1 Mesin Kalkulator K13 (`domain/calculator/`)
-- [ ] Buat model domain `AttendanceStatus.kt`, `UserRole.kt`, dan `StudentGradeSummary.kt` di paket `id.mts.rth.domain.model`.
-- [ ] Buat `K13GradeCalculator.kt` yang mengimplementasikan:
+- [x] Buat model domain `AttendanceStatus.kt`, `UserRole.kt`, dan `StudentGradeSummary.kt` di paket `id.mts.rth.domain.model`.
+- [x] Buat `K13GradeCalculator.kt` yang mengimplementasikan:
   - Kalkulasi rata-rata Tugas ($\overline{T}$) dan Ulangan Harian ($\overline{UH}$) dengan penanganan nilai kosong (`null`).
   - Kalkulasi Nilai Akhir Pengetahuan ($\text{NA}_{\text{KI3}}$) dengan normalisasi bobot aktif.
   - Kalkulasi Nilai Akhir Keterampilan ($\text{NA}_{\text{KI4}}$).
   - Fungsi deterministik `hitungPredikatK13(nilaiAkhirBulat, kkm)` untuk menghasilkan predikat A, B, C, atau D.
-- [ ] Buat unit test `K13GradeCalculatorTest.kt` di `app/src/test/kotlin/id/mts/rth/domain/calculator/` yang menguji berbagai skenario nilai KKM ($70, 75, 78, 80$) dan komponen ujian yang belum terisi.
+- [x] Buat unit test `K13GradeCalculatorTest.kt` di `app/src/test/kotlin/id/mts/rth/domain/calculator/` yang menguji berbagai skenario nilai KKM ($70, 75, 78, 80$) dan komponen ujian yang belum terisi.
 
 ### 3.2 Keamanan PIN Offline & Sesi (`core/security/`)
 - [ ] Buat `PinCryptoManager.kt` menggunakan `PBKDF2WithHmacSHA256` ($10.000$ iterasi, 16-byte random salt).
