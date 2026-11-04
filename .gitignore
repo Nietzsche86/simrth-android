@@ -16,6 +16,11 @@ out/
 build/
 app/build/
 
+# Server local data & logs
+server/pb_data/
+server/*.pid
+server/*.log
+
 # Gradle files
 .gradle/
 buildOutput/
