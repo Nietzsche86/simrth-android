@@ -392,7 +392,7 @@ class AuthRepository(
             if (salt.isNullOrBlank() || hash.isNullOrBlank()) {
                 return@withContext ResultState.Error("Data PIN belum dikonfigurasi.")
             }
-            if (!PinCryptoManager.verifyPin(oldPin, hash, salt)) {
+            if (!PinCryptoManager.verifyPin(oldPin, salt, hash)) {
                 return@withContext ResultState.Error("PIN lama salah.")
             }
             if (newPin.length != 6 || !newPin.all { it.isDigit() }) {
@@ -400,7 +400,8 @@ class AuthRepository(
             }
             val newSalt = PinCryptoManager.generateSalt()
             val newHash = PinCryptoManager.hashPin(newPin, newSalt)
-            sessionPreferences.savePin(newHash, newSalt)
+            val newSaltBase64 = PinCryptoManager.saltToBase64(newSalt)
+            sessionPreferences.savePin(newHash, newSaltBase64)
             ResultState.Success(Unit)
         } catch (e: Exception) {
             ResultState.Error("Gagal memperbarui PIN: ${e.localizedMessage}")

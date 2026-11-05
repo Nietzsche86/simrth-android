@@ -160,7 +160,7 @@ private fun AccountCardItem(
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = "Username: ${guru.username} • NIP: ${guru.nip ?: "-"}",
+                        text = "NIP: ${guru.nip ?: "-"} • Status: ${guru.statusKepegawaian}",
                         style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                     )
                 }

@@ -129,7 +129,7 @@ fun MainContainerScreen(
                 "students" -> {
                     StudentListScreen(
                         viewModel = studentViewModel,
-                        onNavigateToDetail = { siswaId, kelasId, nomorAbsen ->
+                        onStudentClick = { siswaId, kelasId, nomorAbsen ->
                             navController.navigate(Screen.StudentEmisDetail.createRoute(siswaId, kelasId, nomorAbsen))
                         },
                         onNavigateBack = { currentTabId = "home" }

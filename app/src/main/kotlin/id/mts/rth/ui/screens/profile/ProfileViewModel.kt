@@ -90,15 +90,13 @@ class ProfileViewModel(
                     npk = "NPK" + userId.takeLast(3),
                     nuptk = null,
                     nik = "3301010101850001",
-                    namaLengkap = session.userName.ifBlank { "Pengguna SIMRTH" },
+                    namaLengkap = session.userName?.ifBlank { "Pengguna SIMRTH" } ?: "Pengguna SIMRTH",
                     gelarDepan = null,
                     gelarBelakang = null,
                     jenisKelamin = "L",
                     noWa = "081234567890",
                     statusKepegawaian = "PNS / Yayasan",
                     role = session.activeRole,
-                    username = session.userName.lowercase(),
-                    password = "",
                     isDeleted = false,
                     updatedAt = System.currentTimeMillis()
                 )
