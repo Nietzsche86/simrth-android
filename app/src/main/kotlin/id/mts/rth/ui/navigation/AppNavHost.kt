@@ -24,6 +24,7 @@ import id.mts.rth.ui.screens.grading.GradingOverviewScreen
 import id.mts.rth.ui.screens.grading.GradingViewModel
 import id.mts.rth.ui.screens.home.HomeScreen
 import id.mts.rth.ui.screens.home.HomeViewModel
+import id.mts.rth.ui.screens.main.MainContainerScreen
 import id.mts.rth.ui.screens.students.StudentEmisDetailScreen
 import id.mts.rth.ui.screens.students.StudentListScreen
 import id.mts.rth.ui.screens.students.StudentViewModel
@@ -78,29 +79,11 @@ fun AppNavHost(
             )
         }
 
-        // 3. Beranda
+        // 3. Kontainer Utama Aplikasi (Berbasis Bottom Navigation Adaptif)
         composable(Screen.Home.route) {
-            val homeViewModel: HomeViewModel = koinViewModel()
-            HomeScreen(
-                viewModel = homeViewModel,
-                onNavigateToAttendance = { kelasId, mapelId ->
-                    navController.navigate(Screen.Attendance.createRoute(null, kelasId, mapelId))
-                },
-                onNavigateToGrading = { kelasId, mapelId ->
-                    navController.navigate(Screen.GradingOverview.createRoute(null, kelasId, mapelId))
-                },
-                onNavigateToStudents = {
-                    navController.navigate(Screen.StudentList.route)
-                },
-                onNavigateToPinLock = {
-                    navController.navigate(Screen.PinLock.route)
-                },
-                onNavigateToKkmConfig = {
-                    navController.navigate(Screen.KkmConfig.route)
-                },
-                onNavigateToMutation = {
-                    navController.navigate(Screen.LifecycleMutation.route)
-                }
+            MainContainerScreen(
+                navController = navController,
+                authViewModel = authViewModel
             )
         }
 

@@ -54,4 +54,13 @@ interface StudentDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAnggotaRombel(entities: List<AnggotaRombelEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertSingleAnggotaRombel(entity: AnggotaRombelEntity)
+
+    @Query("SELECT * FROM anggota_rombel WHERE siswaId = :siswaId AND tahunAjaranId = :tahunAjaranId AND isDeleted = 0 LIMIT 1")
+    suspend fun getAnggotaRombelBySiswaAndTahun(siswaId: String, tahunAjaranId: String): AnggotaRombelEntity?
+
+    @Query("SELECT COUNT(*) > 0 FROM siswa_core WHERE nisLokal = :nisLokal AND id != :excludeSiswaId AND isDeleted = 0")
+    suspend fun isNisLokalTaken(nisLokal: String, excludeSiswaId: String): Boolean
 }

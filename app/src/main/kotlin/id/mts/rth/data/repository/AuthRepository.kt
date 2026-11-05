@@ -380,4 +380,42 @@ class AuthRepository(
             }
         }
     }
+
+    /**
+     * Memperbarui PIN offline 6-digit pengguna.
+     */
+    suspend fun updatePin(oldPin: String, newPin: String): ResultState<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val session = sessionPreferences.sessionFlow.first()
+            val salt = session.pinSalt
+            val hash = session.pinHash
+            if (salt.isNullOrBlank() || hash.isNullOrBlank()) {
+                return@withContext ResultState.Error("Data PIN belum dikonfigurasi.")
+            }
+            if (!PinCryptoManager.verifyPin(oldPin, hash, salt)) {
+                return@withContext ResultState.Error("PIN lama salah.")
+            }
+            if (newPin.length != 6 || !newPin.all { it.isDigit() }) {
+                return@withContext ResultState.Error("PIN baru harus berupa 6 digit angka.")
+            }
+            val newSalt = PinCryptoManager.generateSalt()
+            val newHash = PinCryptoManager.hashPin(newPin, newSalt)
+            sessionPreferences.savePin(newHash, newSalt)
+            ResultState.Success(Unit)
+        } catch (e: Exception) {
+            ResultState.Error("Gagal memperbarui PIN: ${e.localizedMessage}")
+        }
+    }
+
+    /**
+     * Menghapus sesi login pengguna.
+     */
+    suspend fun logout(): ResultState<Unit> = withContext(Dispatchers.IO) {
+        try {
+            sessionPreferences.clearSession()
+            ResultState.Success(Unit)
+        } catch (e: Exception) {
+            ResultState.Error("Gagal keluar: ${e.localizedMessage}")
+        }
+    }
 }

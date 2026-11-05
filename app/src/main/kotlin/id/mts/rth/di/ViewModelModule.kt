@@ -5,6 +5,7 @@ import id.mts.rth.ui.screens.attendance.AttendanceViewModel
 import id.mts.rth.ui.screens.auth.AuthViewModel
 import id.mts.rth.ui.screens.grading.GradingViewModel
 import id.mts.rth.ui.screens.home.HomeViewModel
+import id.mts.rth.ui.screens.profile.ProfileViewModel
 import id.mts.rth.ui.screens.students.StudentViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -16,4 +17,5 @@ val viewModelModule = module {
     viewModel { GradingViewModel(get(), get(), get(), get()) }
     viewModel { StudentViewModel(get(), get(), get()) }
     viewModel { AdminViewModel(get(), get(), get(), get()) }
+    viewModel { ProfileViewModel(get(), get()) }
 }

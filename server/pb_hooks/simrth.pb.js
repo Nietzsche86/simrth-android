@@ -666,7 +666,7 @@ routerAdd("POST", "/api/v1/sync/push", (e) => {
                     }).execute();
                 } else if (table === "siswa_core") {
                     $app.db().newQuery(`
-                        INSERT OR REPLACE INTO siswa_core VALUES 
+                        INSERT OR REPLACE INTO siswa_core (id, nis_lokal, nisn, nama_lengkap, jenis_kelamin, foto_file_name, status_siswa, is_deleted, sync_status, updated_at) VALUES 
                         ({:id}, {:nisLokal}, {:nisn}, {:namaLengkap}, {:jenisKelamin}, {:fotoFileName}, {:statusSiswa}, 0, 'SYNCED', {:updatedAt})
                     `).bind({
                         id: payload.id,
@@ -678,9 +678,70 @@ routerAdd("POST", "/api/v1/sync/push", (e) => {
                         statusSiswa: payload.statusSiswa || "AKTIF",
                         updatedAt: updatedAt
                     }).execute();
+                } else if (table === "siswa_detail") {
+                    $app.db().newQuery(`
+                        INSERT OR REPLACE INTO siswa_detail (
+                            id, siswa_id, nik, no_kk, tempat_lahir, tanggal_lahir, agama, anak_ke, jumlah_saudara,
+                            alamat_jalan, rt, rw, desa_kelurahan, kecamatan, kabupaten_kota, kode_pos,
+                            status_tempat_tinggal, nik_ayah, nama_ayah, tahun_lahir_ayah, status_ayah,
+                            pendidikan_ayah, pekerjaan_ayah, penghasilan_ayah,
+                            nik_ibu, nama_ibu, tahun_lahir_ibu, status_ibu,
+                            pendidikan_ibu, pekerjaan_ibu, penghasilan_ibu,
+                            no_hp_orang_tua_wa, nama_wali, hubungan_wali, no_hp_wali,
+                            no_kip, no_kis_pkh, is_deleted, sync_status, updated_at
+                        ) VALUES (
+                            {:id}, {:siswaId}, {:nik}, {:noKk}, {:tempatLahir}, {:tanggalLahir}, {:agama}, {:anakKe}, {:jumlahSaudara},
+                            {:alamatJalan}, {:rt}, {:rw}, {:desaKelurahan}, {:kecamatan}, {:kabupatenKota}, {:kodePos},
+                            {:statusTempatTinggal}, {:nikAyah}, {:namaAyah}, {:tahunLahirAyah}, {:statusAyah},
+                            {:pendidikanAyah}, {:pekerjaanAyah}, {:penghasilanAyah},
+                            {:nikIbu}, {:namaIbu}, {:tahunLahirIbu}, {:statusIbu},
+                            {:pendidikanIbu}, {:pekerjaanIbu}, {:penghasilanIbu},
+                            {:noHpOrangTuaWa}, {:namaWali}, {:hubunganWali}, {:noHpWali},
+                            {:noKip}, {:noKisPkh}, 0, 'SYNCED', {:updatedAt}
+                        )
+                    `).bind({
+                        id: payload.id,
+                        siswaId: payload.siswaId,
+                        nik: payload.nik || "",
+                        noKk: payload.noKk || "",
+                        tempatLahir: payload.tempatLahir || "Kudus",
+                        tanggalLahir: payload.tanggalLahir || "2012-01-01",
+                        agama: payload.agama || "Islam",
+                        anakKe: Number(payload.anakKe || 1),
+                        jumlahSaudara: Number(payload.jumlahSaudara || 0),
+                        alamatJalan: payload.alamatJalan || "",
+                        rt: payload.rt || "001",
+                        rw: payload.rw || "001",
+                        desaKelurahan: payload.desaKelurahan || "",
+                        kecamatan: payload.kecamatan || "",
+                        kabupatenKota: payload.kabupatenKota || "Kudus",
+                        kodePos: payload.kodePos || null,
+                        statusTempatTinggal: payload.statusTempatTinggal || "Bersama Orang Tua",
+                        nikAyah: payload.nikAyah || null,
+                        namaAyah: payload.namaAyah || null,
+                        tahunLahirAyah: payload.tahunLahirAyah || null,
+                        statusAyah: payload.statusAyah || "Masih Hidup",
+                        pendidikanAyah: payload.pendidikanAyah || null,
+                        pekerjaanAyah: payload.pekerjaanAyah || null,
+                        penghasilanAyah: payload.penghasilanAyah || null,
+                        nikIbu: payload.nikIbu || null,
+                        namaIbu: payload.namaIbu || null,
+                        tahunLahirIbu: payload.tahunLahirIbu || null,
+                        statusIbu: payload.statusIbu || "Masih Hidup",
+                        pendidikanIbu: payload.pendidikanIbu || null,
+                        pekerjaanIbu: payload.pekerjaanIbu || null,
+                        penghasilanIbu: payload.penghasilanIbu || null,
+                        noHpOrangTuaWa: payload.noHpOrangTuaWa || "",
+                        namaWali: payload.namaWali || null,
+                        hubunganWali: payload.hubunganWali || null,
+                        noHpWali: payload.noHpWali || null,
+                        noKip: payload.noKip || null,
+                        noKisPkh: payload.noKisPkh || null,
+                        updatedAt: updatedAt
+                    }).execute();
                 } else if (table === "anggota_rombel") {
                     $app.db().newQuery(`
-                        INSERT OR REPLACE INTO anggota_rombel VALUES 
+                        INSERT OR REPLACE INTO anggota_rombel (id, siswa_id, kelas_id, tahun_ajaran_id, nomor_absen, status_keanggotaan, is_deleted, updated_at) VALUES 
                         ({:id}, {:siswaId}, {:kelasId}, {:tahunAjaranId}, {:nomorAbsen}, {:statusKeanggotaan}, 0, {:updatedAt})
                     `).bind({
                         id: payload.id,

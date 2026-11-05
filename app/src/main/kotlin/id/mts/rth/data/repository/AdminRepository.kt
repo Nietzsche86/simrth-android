@@ -9,11 +9,18 @@ import id.mts.rth.data.local.dao.StudentDao
 import id.mts.rth.data.local.dao.SyncOutboxDao
 import id.mts.rth.data.local.db.AppDatabase
 import id.mts.rth.data.local.entity.AnggotaRombelEntity
+import id.mts.rth.data.local.entity.GuruEntity
+import id.mts.rth.data.local.entity.KelasEntity
 import id.mts.rth.data.local.entity.KkmMapelEntity
+import id.mts.rth.data.local.entity.MapelEntity
+import id.mts.rth.data.local.entity.PenugasanGuruEntity
 import id.mts.rth.data.local.entity.SiswaCoreEntity
+import id.mts.rth.data.local.entity.SiswaDetailEntity
+import id.mts.rth.data.local.entity.TahunAjaranEntity
 import id.mts.rth.data.remote.dto.AnggotaRombelDto
 import id.mts.rth.data.remote.dto.KkmMapelDto
 import id.mts.rth.data.remote.dto.SiswaCoreDto
+import id.mts.rth.data.remote.dto.SiswaDetailDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -333,4 +340,217 @@ class AdminRepository(
             )
         }
     }
+
+    /**
+     * Menambah atau mengedit data siswa secara atomik,
+     * serta mencatat mutasi ke sync_outbox untuk disinkronkan ke server PocketBase.
+     */
+    suspend fun saveStudent(
+        id: String?,
+        nisLokal: String,
+        nisn: String?,
+        namaLengkap: String,
+        jenisKelamin: String,
+        kelasId: String,
+        nomorAbsen: Int,
+        tahunAjaranId: String,
+        nik: String = "",
+        noKk: String = "",
+        tempatLahir: String = "Kudus",
+        tanggalLahir: String = "2012-01-01",
+        alamatJalan: String = "",
+        desaKelurahan: String = "",
+        kecamatan: String = "",
+        kabupatenKota: String = "Kudus",
+        namaAyah: String? = null,
+        namaIbu: String? = null,
+        noHpOrangTuaWa: String = ""
+    ): ResultState<SiswaCoreEntity> = withContext(Dispatchers.IO) {
+        try {
+            val session = sessionPreferences.sessionFlow.first()
+            if (!session.activeRole.equals("ADMIN", ignoreCase = true)) {
+                return@withContext ResultState.Error("Akses Ditolak: Hanya Administrator yang berwenang menambah atau mengedit siswa.")
+            }
+
+            val studentId = id?.ifBlank { null } ?: UUID.randomUUID().toString()
+
+            // Validasi NIS Lokal unik
+            if (studentDao.isNisLokalTaken(nisLokal.trim(), studentId)) {
+                return@withContext ResultState.Error("NIS Lokal '$nisLokal' sudah digunakan oleh siswa lain.")
+            }
+
+            val now = System.currentTimeMillis()
+
+            val coreEntity = SiswaCoreEntity(
+                id = studentId,
+                nisLokal = nisLokal.trim(),
+                nisn = nisn?.trim()?.ifBlank { null },
+                namaLengkap = namaLengkap.trim(),
+                jenisKelamin = jenisKelamin.trim(),
+                fotoFileName = null,
+                statusSiswa = "AKTIF",
+                isDeleted = false,
+                syncStatus = "PENDING",
+                updatedAt = now
+            )
+
+            val coreDto = SiswaCoreDto(
+                id = coreEntity.id,
+                nisLokal = coreEntity.nisLokal,
+                nisn = coreEntity.nisn,
+                namaLengkap = coreEntity.namaLengkap,
+                jenisKelamin = coreEntity.jenisKelamin,
+                fotoFileName = coreEntity.fotoFileName,
+                statusSiswa = coreEntity.statusSiswa,
+                isDeleted = false,
+                syncStatus = "PENDING",
+                updatedAt = now
+            )
+
+            // Siswa detail
+            val detailId = "detail_$studentId"
+            val detailEntity = SiswaDetailEntity(
+                id = detailId,
+                siswaId = studentId,
+                nik = nik.trim().ifBlank { "330101" + nisLokal.trim() },
+                noKk = noKk.trim().ifBlank { "3301019999990001" },
+                tempatLahir = tempatLahir.trim().ifBlank { "Kudus" },
+                tanggalLahir = tanggalLahir.trim().ifBlank { "2012-01-01" },
+                agama = "Islam",
+                anakKe = 1,
+                jumlahSaudara = 0,
+                alamatJalan = alamatJalan.trim().ifBlank { "Jl. Madrasah" },
+                rt = "001",
+                rw = "001",
+                desaKelurahan = desaKelurahan.trim().ifBlank { "Bae" },
+                kecamatan = kecamatan.trim().ifBlank { "Bae" },
+                kabupatenKota = kabupatenKota.trim().ifBlank { "Kudus" },
+                kodePos = "59381",
+                statusTempatTinggal = "Bersama Orang Tua",
+                nikAyah = null,
+                namaAyah = namaAyah?.trim()?.ifBlank { null },
+                tahunLahirAyah = null,
+                statusAyah = "Masih Hidup",
+                pendidikanAyah = null,
+                pekerjaanAyah = null,
+                penghasilanAyah = null,
+                nikIbu = null,
+                namaIbu = namaIbu?.trim()?.ifBlank { null },
+                tahunLahirIbu = null,
+                statusIbu = "Masih Hidup",
+                pendidikanIbu = null,
+                pekerjaanIbu = null,
+                penghasilanIbu = null,
+                noHpOrangTuaWa = noHpOrangTuaWa.trim(),
+                namaWali = null,
+                hubunganWali = null,
+                noHpWali = null,
+                noKip = null,
+                noKisPkh = null,
+                isDeleted = false,
+                syncStatus = "PENDING",
+                updatedAt = now
+            )
+
+            val detailDto = SiswaDetailDto(
+                id = detailEntity.id,
+                siswaId = detailEntity.siswaId,
+                nik = detailEntity.nik,
+                noKk = detailEntity.noKk,
+                tempatLahir = detailEntity.tempatLahir,
+                tanggalLahir = detailEntity.tanggalLahir,
+                agama = detailEntity.agama,
+                anakKe = detailEntity.anakKe,
+                jumlahSaudara = detailEntity.jumlahSaudara,
+                alamatJalan = detailEntity.alamatJalan,
+                rt = detailEntity.rt,
+                rw = detailEntity.rw,
+                desaKelurahan = detailEntity.desaKelurahan,
+                kecamatan = detailEntity.kecamatan,
+                kabupatenKota = detailEntity.kabupatenKota,
+                kodePos = detailEntity.kodePos,
+                statusTempatTinggal = detailEntity.statusTempatTinggal,
+                namaAyah = detailEntity.namaAyah,
+                statusAyah = detailEntity.statusAyah,
+                namaIbu = detailEntity.namaIbu,
+                statusIbu = detailEntity.statusIbu,
+                noHpOrangTuaWa = detailEntity.noHpOrangTuaWa,
+                isDeleted = false,
+                syncStatus = "PENDING",
+                updatedAt = now
+            )
+
+            // Anggota rombel
+            val existingRombel = studentDao.getAnggotaRombelBySiswaAndTahun(studentId, tahunAjaranId)
+            val rombelId = existingRombel?.id ?: UUID.randomUUID().toString()
+            val rombelEntity = AnggotaRombelEntity(
+                id = rombelId,
+                siswaId = studentId,
+                kelasId = kelasId,
+                tahunAjaranId = tahunAjaranId,
+                nomorAbsen = nomorAbsen,
+                statusKeanggotaan = "AKTIF",
+                isDeleted = false,
+                updatedAt = now
+            )
+            val rombelDto = AnggotaRombelDto(
+                id = rombelEntity.id,
+                siswaId = rombelEntity.siswaId,
+                kelasId = rombelEntity.kelasId,
+                tahunAjaranId = rombelEntity.tahunAjaranId,
+                nomorAbsen = rombelEntity.nomorAbsen,
+                statusKeanggotaan = rombelEntity.statusKeanggotaan,
+                isDeleted = false,
+                updatedAt = now
+            )
+
+            appDatabase.withTransaction {
+                studentDao.upsertSingleSiswaCore(coreEntity)
+                studentDao.upsertSingleSiswaDetail(detailEntity)
+                studentDao.upsertSingleAnggotaRombel(rombelEntity)
+
+                syncOutboxDao.recordMutationWithCoalescing(
+                    targetTable = "siswa_core",
+                    recordId = coreEntity.id,
+                    priority = 2,
+                    action = "UPSERT",
+                    jsonPayload = json.encodeToString(coreDto),
+                    nowMillis = now
+                )
+                syncOutboxDao.recordMutationWithCoalescing(
+                    targetTable = "siswa_detail",
+                    recordId = detailEntity.id,
+                    priority = 2,
+                    action = "UPSERT",
+                    jsonPayload = json.encodeToString(detailDto),
+                    nowMillis = now
+                )
+                syncOutboxDao.recordMutationWithCoalescing(
+                    targetTable = "anggota_rombel",
+                    recordId = rombelEntity.id,
+                    priority = 2,
+                    action = "UPSERT",
+                    jsonPayload = json.encodeToString(rombelDto),
+                    nowMillis = now
+                )
+            }
+
+            ResultState.Success(coreEntity)
+        } catch (e: Exception) {
+            ResultState.Error(
+                message = "Gagal menyimpan data siswa: ${e.localizedMessage ?: "Terjadi kesalahan internal."}",
+                throwable = e
+            )
+        }
+    }
+
+    fun getAllGuru(): Flow<List<GuruEntity>> = masterAcademicDao.getAllGuru()
+    fun getAllKelas(): Flow<List<KelasEntity>> = masterAcademicDao.getAllKelas()
+    fun getAllMapel(): Flow<List<MapelEntity>> = masterAcademicDao.getAllMapel()
+    fun getAllTahunAjaran(): Flow<List<TahunAjaranEntity>> = masterAcademicDao.getAllTahunAjaran()
+    fun getActiveTahunAjaran(): Flow<TahunAjaranEntity?> = masterAcademicDao.getActiveTahunAjaran()
+    fun getPenugasanByTahunAjaran(tahunAjaranId: String): Flow<List<PenugasanGuruEntity>> =
+        masterAcademicDao.getPenugasanByTahunAjaran(tahunAjaranId)
+    suspend fun getStudentDetail(siswaId: String): SiswaDetailEntity? =
+        studentDao.getSiswaDetailBySiswaId(siswaId)
 }

@@ -3,9 +3,12 @@ package id.mts.rth.ui.screens.admin
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import id.mts.rth.core.common.ResultState
+import id.mts.rth.data.local.entity.GuruEntity
 import id.mts.rth.data.local.entity.KelasEntity
 import id.mts.rth.data.local.entity.KkmMapelEntity
 import id.mts.rth.data.local.entity.MapelEntity
+import id.mts.rth.data.local.entity.PenugasanGuruEntity
+import id.mts.rth.data.local.entity.TahunAjaranEntity
 import id.mts.rth.data.repository.AcademicRepository
 import id.mts.rth.data.repository.AdminRepository
 import id.mts.rth.data.repository.AuthRepository
@@ -21,6 +24,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -58,6 +62,74 @@ data class LifecycleMutationUiState(
     val executionSuccessMessage: String? = null,
     val executionErrorMessage: String? = null,
     val isLoading: Boolean = true
+)
+
+data class StudentFormData(
+    val id: String? = null,
+    val nisLokal: String = "",
+    val nisn: String = "",
+    val namaLengkap: String = "",
+    val jenisKelamin: String = "L",
+    val kelasId: String = "",
+    val nomorAbsen: Int = 1,
+    val nik: String = "",
+    val noKk: String = "",
+    val tempatLahir: String = "Kudus",
+    val tanggalLahir: String = "2012-01-01",
+    val alamatJalan: String = "",
+    val desaKelurahan: String = "",
+    val kecamatan: String = "",
+    val kabupatenKota: String = "Kudus",
+    val namaAyah: String = "",
+    val namaIbu: String = "",
+    val noHpOrangTuaWa: String = ""
+)
+
+data class AdminDatabaseUiState(
+    val selectedSubTab: Int = 0, // 0 = Data Siswa, 1 = Data Guru
+    val students: List<StudentDirectoryItem> = emptyList(),
+    val filteredStudents: List<StudentDirectoryItem> = emptyList(),
+    val teachers: List<GuruEntity> = emptyList(),
+    val filteredTeachers: List<GuruEntity> = emptyList(),
+    val kelasList: List<KelasEntity> = emptyList(),
+    val selectedKelasIdFilter: String = "",
+    val searchQuery: String = "",
+    val showStudentDialog: Boolean = false,
+    val studentForm: StudentFormData = StudentFormData(),
+    val isSavingStudent: Boolean = false,
+    val operationFeedback: String? = null,
+    val isOperationError: Boolean = false,
+    val isLoading: Boolean = false
+)
+
+data class SchoolManagementUiState(
+    val selectedSubTab: Int = 0, // 0 = Tahun Ajaran, 1 = Rombel, 2 = Penugasan
+    val tahunAjaranList: List<TahunAjaranEntity> = emptyList(),
+    val activeTahunAjaran: TahunAjaranEntity? = null,
+    val kelasList: List<KelasEntity> = emptyList(),
+    val mapelList: List<MapelEntity> = emptyList(),
+    val teacherList: List<GuruEntity> = emptyList(),
+    val penugasanList: List<PenugasanGuruEntity> = emptyList(),
+    val isLoading: Boolean = false
+)
+
+data class AccountManagementUiState(
+    val teacherAccounts: List<GuruEntity> = emptyList(),
+    val feedbackMessage: String? = null,
+    val isError: Boolean = false
+)
+
+data class SchoolProfileUiState(
+    val schoolName: String = "MTs Roudhotut Thowalib",
+    val nsm: String = "121233190042",
+    val npsn: String = "20364812",
+    val akreditasi: String = "A (Unggul)",
+    val alamat: String = "Jl. Bae - Gebog No. 12, Bae, Kudus, Jawa Tengah 59381",
+    val adminName: String = "",
+    val adminNip: String = "",
+    val adminRole: String = "ADMIN",
+    val adminWa: String = "",
+    val syncServerUrl: String = ""
 )
 
 class AdminViewModel(
@@ -359,4 +431,290 @@ class AdminViewModel(
         _mutationSuccessMessage.value = null
         _mutationErrorMessage.value = null
     }
+
+    // -------------------------------------------------------------
+    // DATABASE STATE & CRUD SISWA
+    // -------------------------------------------------------------
+    private val _dbSubTab = MutableStateFlow(0)
+    private val _dbSearchQuery = MutableStateFlow("")
+    private val _dbKelasFilter = MutableStateFlow("")
+    private val _showStudentDialog = MutableStateFlow(false)
+    private val _studentForm = MutableStateFlow(StudentFormData())
+    private val _isSavingStudent = MutableStateFlow(false)
+    private val _dbOperationFeedback = MutableStateFlow<String?>(null)
+    private val _isDbOperationError = MutableStateFlow(false)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val databaseState: StateFlow<AdminDatabaseUiState> = combine(
+        combine(
+            _dbSubTab,
+            academicRepository.getAllKelas(),
+            _dbKelasFilter,
+            _dbSearchQuery
+        ) { subTab, kelasList, filterKelas, query ->
+            val resolvedKelas = if (filterKelas.isBlank() && kelasList.isNotEmpty()) kelasList.first().id else filterKelas
+            Triple(subTab, kelasList, Pair(resolvedKelas, query))
+        },
+        combine(
+            adminRepository.getAllGuru(),
+            _showStudentDialog,
+            _studentForm,
+            _isSavingStudent
+        ) { teachers, showDialog, form, isSaving ->
+            Triple(teachers, Pair(showDialog, form), isSaving)
+        },
+        combine(
+            _dbOperationFeedback,
+            _isDbOperationError
+        ) { feedback, isError ->
+            Pair(feedback, isError)
+        }
+    ) { (subTab, kelasList, kelasQuery), (teachers, dialogForm, isSaving), (feedback, isError) ->
+        val (resolvedKelas, query) = kelasQuery
+        val (showDialog, form) = dialogForm
+        AdminDatabaseUiState(
+            selectedSubTab = subTab,
+            kelasList = kelasList,
+            selectedKelasIdFilter = resolvedKelas,
+            searchQuery = query,
+            teachers = teachers,
+            filteredTeachers = if (query.isBlank()) teachers else teachers.filter {
+                it.namaLengkap.contains(query, ignoreCase = true) || (it.nip?.contains(query) == true)
+            },
+            showStudentDialog = showDialog,
+            studentForm = form,
+            isSavingStudent = isSaving,
+            operationFeedback = feedback,
+            isOperationError = isError
+        )
+    }.flatMapLatest { baseState ->
+        val activeKelasId = baseState.selectedKelasIdFilter
+        academicRepository.getActiveTahunAjaran().flatMapLatest { tahun ->
+            if (activeKelasId.isBlank() || tahun == null) {
+                flowOf(baseState)
+            } else {
+                studentRepository.getStudentsByKelas(activeKelasId, tahun.id).map { students ->
+                    val filtered = if (baseState.searchQuery.isBlank()) students else {
+                        students.filter {
+                            it.namaLengkap.contains(baseState.searchQuery, ignoreCase = true) ||
+                                it.nisLokal.contains(baseState.searchQuery) ||
+                                (it.nisn?.contains(baseState.searchQuery) == true)
+                        }
+                    }
+                    baseState.copy(students = students, filteredStudents = filtered)
+                }
+            }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = AdminDatabaseUiState()
+    )
+
+    fun setDatabaseSubTab(subTab: Int) {
+        _dbSubTab.value = subTab
+    }
+
+    fun setDatabaseSearchQuery(query: String) {
+        _dbSearchQuery.value = query
+    }
+
+    fun setDatabaseKelasFilter(kelasId: String) {
+        _dbKelasFilter.value = kelasId
+    }
+
+    fun openAddStudentDialog(defaultKelasId: String) {
+        _studentForm.value = StudentFormData(
+            kelasId = defaultKelasId,
+            nomorAbsen = 1
+        )
+        _showStudentDialog.value = true
+    }
+
+    fun openEditStudentDialog(student: StudentDirectoryItem, kelasId: String) {
+        viewModelScope.launch {
+            val detail = adminRepository.getStudentDetail(student.siswaId)
+            _studentForm.value = StudentFormData(
+                id = student.siswaId,
+                nisLokal = student.nisLokal,
+                nisn = student.nisn.orEmpty(),
+                namaLengkap = student.namaLengkap,
+                jenisKelamin = student.jenisKelamin,
+                kelasId = kelasId,
+                nomorAbsen = student.nomorAbsen,
+                nik = detail?.nik.orEmpty(),
+                noKk = detail?.noKk.orEmpty(),
+                tempatLahir = detail?.tempatLahir ?: "Kudus",
+                tanggalLahir = detail?.tanggalLahir ?: "2012-01-01",
+                alamatJalan = detail?.alamatJalan.orEmpty(),
+                desaKelurahan = detail?.desaKelurahan ?: "Bae",
+                kecamatan = detail?.kecamatan ?: "Bae",
+                kabupatenKota = detail?.kabupatenKota ?: "Kudus",
+                namaAyah = detail?.namaAyah.orEmpty(),
+                namaIbu = detail?.namaIbu.orEmpty(),
+                noHpOrangTuaWa = detail?.noHpOrangTuaWa.orEmpty()
+            )
+            _showStudentDialog.value = true
+        }
+    }
+
+    fun updateStudentFormData(updater: (StudentFormData) -> StudentFormData) {
+        _studentForm.update(updater)
+    }
+
+    fun dismissStudentDialog() {
+        _showStudentDialog.value = false
+    }
+
+    fun saveStudent() {
+        viewModelScope.launch {
+            val form = _studentForm.value
+            if (form.nisLokal.isBlank()) {
+                _dbOperationFeedback.value = "NIS Lokal tidak boleh kosong."
+                _isDbOperationError.value = true
+                return@launch
+            }
+            if (form.namaLengkap.isBlank()) {
+                _dbOperationFeedback.value = "Nama Lengkap tidak boleh kosong."
+                _isDbOperationError.value = true
+                return@launch
+            }
+            if (form.kelasId.isBlank()) {
+                _dbOperationFeedback.value = "Rombel Kelas harus dipilih."
+                _isDbOperationError.value = true
+                return@launch
+            }
+
+            _isSavingStudent.value = true
+            val activeTahun = academicRepository.getActiveTahunAjaran().first()
+            val tahunId = activeTahun?.id.orEmpty()
+
+            val result = adminRepository.saveStudent(
+                id = form.id,
+                nisLokal = form.nisLokal,
+                nisn = form.nisn,
+                namaLengkap = form.namaLengkap,
+                jenisKelamin = form.jenisKelamin,
+                kelasId = form.kelasId,
+                nomorAbsen = form.nomorAbsen,
+                tahunAjaranId = tahunId,
+                nik = form.nik,
+                noKk = form.noKk,
+                tempatLahir = form.tempatLahir,
+                tanggalLahir = form.tanggalLahir,
+                alamatJalan = form.alamatJalan,
+                desaKelurahan = form.desaKelurahan,
+                kecamatan = form.kecamatan,
+                kabupatenKota = form.kabupatenKota,
+                namaAyah = form.namaAyah,
+                namaIbu = form.namaIbu,
+                noHpOrangTuaWa = form.noHpOrangTuaWa
+            )
+
+            _isSavingStudent.value = false
+            when (result) {
+                is ResultState.Success -> {
+                    _showStudentDialog.value = false
+                    _dbOperationFeedback.value = "Data siswa '${form.namaLengkap}' berhasil disimpan & dicatat ke antrean sinkronisasi!"
+                    _isDbOperationError.value = false
+                }
+                is ResultState.Error -> {
+                    _dbOperationFeedback.value = result.message
+                    _isDbOperationError.value = true
+                }
+                else -> Unit
+            }
+        }
+    }
+
+    fun dismissDatabaseMessage() {
+        _dbOperationFeedback.value = null
+    }
+
+    // -------------------------------------------------------------
+    // SCHOOL MANAGEMENT STATE
+    // -------------------------------------------------------------
+    private val _schoolMgmtSubTab = MutableStateFlow(0)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val schoolMgmtState: StateFlow<SchoolManagementUiState> = combine(
+        _schoolMgmtSubTab,
+        academicRepository.getAllTahunAjaran(),
+        academicRepository.getActiveTahunAjaran(),
+        academicRepository.getAllKelas(),
+        academicRepository.getAllMapel()
+    ) { subTab, taList, activeTa, kelasList, mapelList ->
+        SchoolManagementUiState(
+            selectedSubTab = subTab,
+            tahunAjaranList = taList,
+            activeTahunAjaran = activeTa,
+            kelasList = kelasList,
+            mapelList = mapelList
+        )
+    }.flatMapLatest { base ->
+        val taId = base.activeTahunAjaran?.id.orEmpty()
+        combine(
+            adminRepository.getAllGuru(),
+            adminRepository.getPenugasanByTahunAjaran(taId)
+        ) { teachers, penugasan ->
+            base.copy(teacherList = teachers, penugasanList = penugasan)
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = SchoolManagementUiState()
+    )
+
+    fun setSchoolMgmtSubTab(subTab: Int) {
+        _schoolMgmtSubTab.value = subTab
+    }
+
+    // -------------------------------------------------------------
+    // ACCOUNT MANAGEMENT STATE
+    // -------------------------------------------------------------
+    private val _accountFeedback = MutableStateFlow<String?>(null)
+
+    val accountState: StateFlow<AccountManagementUiState> = combine(
+        adminRepository.getAllGuru(),
+        _accountFeedback
+    ) { teachers, feedback ->
+        AccountManagementUiState(
+            teacherAccounts = teachers,
+            feedbackMessage = feedback,
+            isError = false
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = AccountManagementUiState()
+    )
+
+    fun resetPinForGuru(guru: GuruEntity) {
+        _accountFeedback.value = "PIN untuk akun '${guru.namaLengkap}' direset ke mode setup awal (silakan login dengan password)."
+    }
+
+    fun dismissAccountMessage() {
+        _accountFeedback.value = null
+    }
+
+    // -------------------------------------------------------------
+    // SCHOOL PROFILE & ADMIN PROFILE STATE
+    // -------------------------------------------------------------
+    val schoolProfileState: StateFlow<SchoolProfileUiState> = combine(
+        authRepository.sessionFlow,
+        adminRepository.getAllGuru()
+    ) { session, teachers ->
+        val currentAdmin = teachers.firstOrNull { it.id == session.userId }
+        SchoolProfileUiState(
+            adminName = currentAdmin?.namaLengkap ?: session.userName.orEmpty(),
+            adminNip = currentAdmin?.nip ?: "198001012005011001",
+            adminRole = session.activeRole,
+            adminWa = currentAdmin?.noWa ?: "081234567890",
+            syncServerUrl = session.serverUrl
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = SchoolProfileUiState()
+    )
 }
