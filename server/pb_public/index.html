@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMRTH - Server Sinkronisasi MTs Roudhotut Thowalib</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            max-width: 540px;
+            width: 100%;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .badge {
+            background-color: #dcfce7;
+            color: #15803d;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f766e;
+            margin: 0;
+        }
+        p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #475569;
+            margin: 8px 0 20px 0;
+        }
+        .info-box {
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+        .info-label {
+            color: #64748b;
+        }
+        .info-value {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .btn {
+            display: block;
+            text-align: center;
+            background-color: #0f766e;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #115e59;
+        }
+        .btn-outline {
+            display: block;
+            text-align: center;
+            background-color: transparent;
+            color: #0f766e;
+            border: 1px solid #0f766e;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <span class="badge">Server Aktif</span>
+        </div>
+        <h1>SIMRTH PocketBase Server</h1>
+        <p>Server sinkronisasi data madrasah MTs Roudhotut Thowalib berhasil berjalan dan siap menerima request dari aplikasi Android.</p>
+        
+        <div class="info-box">
+            <div class="info-row">
+                <span class="info-label">Port Layanan:</span>
+                <span class="info-value">8090</span>
+            </div>
+            <div style="border-top: 1px solid #e2e8f0; margin: 8px 0; padding-top: 8px;">
+                <div style="font-weight: 700; font-size: 13px; color: #0f766e; margin-bottom: 6px;">🌐 Web Dashboard PocketBase (/_/):</div>
+                <div class="info-row">
+                    <span class="info-label">Email Superuser:</span>
+                    <span class="info-value">admin@simrth.local</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Password:</span>
+                    <span class="info-value">admin123456</span>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #e2e8f0; margin: 8px 0; padding-top: 8px;">
+                <div style="font-weight: 700; font-size: 13px; color: #0f766e; margin-bottom: 6px;">📱 Login Aplikasi APK SIMRTH:</div>
+                <div class="info-row">
+                    <span class="info-label">Admin Madrasah:</span>
+                    <span class="info-value">admin / admin123</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Guru / Wali 7A:</span>
+                    <span class="info-value">ahmad / guru123</span>
+                </div>
+            </div>
+        </div>
+
+        <a href="/_/" class="btn">Buka PocketBase Admin Dashboard</a>
+        <a href="/api/v1/health" class="btn-outline">Periksa Status API (/api/v1/health)</a>
+    </div>
+</body>
+</html>

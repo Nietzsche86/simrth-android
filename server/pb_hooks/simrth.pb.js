@@ -10,194 +10,196 @@
 onBootstrap((e) => {
     e.next();
 
-    // 1.1 Inisialisasi Tabel SQLite
-    $app.db().newQuery(`
-        PRAGMA journal_mode = WAL;
+    // 1.1 Inisialisasi Koleksi Resmi PocketBase agar Tampil di Dashboard Web (/_/)
+    function ensureCollection(name, fields) {
+        try {
+            return $app.findCollectionByNameOrId(name);
+        } catch (_) {
+            const col = new Collection({
+                type: "base",
+                name: name,
+                fields: fields,
+                listRule: "",
+                viewRule: "",
+                createRule: "",
+                updateRule: "",
+                deleteRule: ""
+            });
+            $app.save(col);
+            return col;
+        }
+    }
 
-        CREATE TABLE IF NOT EXISTS tahun_ajaran (
-            id TEXT PRIMARY KEY,
-            tahun TEXT NOT NULL,
-            semester TEXT NOT NULL,
-            is_active INTEGER NOT NULL DEFAULT 1,
-            tanggal_mulai TEXT NOT NULL,
-            tanggal_selesai TEXT NOT NULL,
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("tahun_ajaran", [
+        { name: "tahun", type: "text", required: true },
+        { name: "semester", type: "text", required: true },
+        { name: "is_active", type: "number" },
+        { name: "tanggal_mulai", type: "text" },
+        { name: "tanggal_selesai", type: "text" },
+        { name: "is_deleted", type: "number" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS master_guru (
-            id TEXT PRIMARY KEY,
-            nip TEXT,
-            npk TEXT,
-            nuptk TEXT,
-            nik TEXT NOT NULL,
-            nama_lengkap TEXT NOT NULL,
-            gelar_depan TEXT,
-            gelar_belakang TEXT,
-            jenis_kelamin TEXT NOT NULL,
-            no_wa TEXT NOT NULL,
-            status_kepegawaian TEXT NOT NULL,
-            role TEXT NOT NULL,
-            username TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL,
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("master_guru", [
+        { name: "nip", type: "text" },
+        { name: "npk", type: "text" },
+        { name: "nuptk", type: "text" },
+        { name: "nik", type: "text", required: true },
+        { name: "nama_lengkap", type: "text", required: true },
+        { name: "gelar_depan", type: "text" },
+        { name: "gelar_belakang", type: "text" },
+        { name: "jenis_kelamin", type: "text", required: true },
+        { name: "no_wa", type: "text", required: true },
+        { name: "status_kepegawaian", type: "text", required: true },
+        { name: "role", type: "text", required: true },
+        { name: "username", type: "text", required: true },
+        { name: "password", type: "text", required: true },
+        { name: "is_deleted", type: "number" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS master_kelas (
-            id TEXT PRIMARY KEY,
-            tingkat INTEGER NOT NULL,
-            nama_rombel TEXT NOT NULL,
-            wali_kelas_guru_id TEXT,
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("master_kelas", [
+        { name: "tingkat", type: "number", required: true },
+        { name: "nama_rombel", type: "text", required: true },
+        { name: "wali_kelas_guru_id", type: "text" },
+        { name: "is_deleted", type: "number" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS master_mapel (
-            id TEXT PRIMARY KEY,
-            kode_mapel TEXT NOT NULL,
-            nama_mapel TEXT NOT NULL,
-            kelompok TEXT NOT NULL,
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("master_mapel", [
+        { name: "kode_mapel", type: "text", required: true },
+        { name: "nama_mapel", type: "text", required: true },
+        { name: "kelompok", type: "text", required: true },
+        { name: "is_deleted", type: "number" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS penugasan_guru (
-            id TEXT PRIMARY KEY,
-            guru_id TEXT NOT NULL,
-            mapel_id TEXT NOT NULL,
-            kelas_id TEXT NOT NULL,
-            tahun_ajaran_id TEXT NOT NULL,
-            jadwal_json TEXT NOT NULL DEFAULT '[]',
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("penugasan_guru", [
+        { name: "guru_id", type: "text", required: true },
+        { name: "mapel_id", type: "text", required: true },
+        { name: "kelas_id", type: "text", required: true },
+        { name: "tahun_ajaran_id", type: "text", required: true },
+        { name: "jadwal_json", type: "text", required: true },
+        { name: "is_deleted", type: "number" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS siswa_core (
-            id TEXT PRIMARY KEY,
-            nis_lokal TEXT NOT NULL,
-            nisn TEXT,
-            nama_lengkap TEXT NOT NULL,
-            jenis_kelamin TEXT NOT NULL,
-            foto_file_name TEXT,
-            status_siswa TEXT NOT NULL DEFAULT 'AKTIF',
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            sync_status TEXT NOT NULL DEFAULT 'SYNCED',
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("siswa_core", [
+        { name: "nis_lokal", type: "text", required: true },
+        { name: "nisn", type: "text" },
+        { name: "nama_lengkap", type: "text", required: true },
+        { name: "jenis_kelamin", type: "text", required: true },
+        { name: "foto_file_name", type: "text" },
+        { name: "status_siswa", type: "text", required: true },
+        { name: "is_deleted", type: "number" },
+        { name: "sync_status", type: "text" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS siswa_detail (
-            id TEXT PRIMARY KEY,
-            siswa_id TEXT NOT NULL UNIQUE,
-            nik TEXT NOT NULL,
-            no_kk TEXT NOT NULL,
-            tempat_lahir TEXT NOT NULL,
-            tanggal_lahir TEXT NOT NULL,
-            agama TEXT NOT NULL DEFAULT 'Islam',
-            anak_ke INTEGER NOT NULL DEFAULT 1,
-            jumlah_saudara INTEGER NOT NULL DEFAULT 0,
-            alamat_jalan TEXT NOT NULL,
-            rt TEXT NOT NULL DEFAULT '001',
-            rw TEXT NOT NULL DEFAULT '001',
-            desa_kelurahan TEXT NOT NULL,
-            kecamatan TEXT NOT NULL,
-            kabupaten_kota TEXT NOT NULL,
-            kode_pos TEXT,
-            status_tempat_tinggal TEXT NOT NULL DEFAULT 'Bersama Orang Tua',
-            nik_ayah TEXT,
-            nama_ayah TEXT,
-            tahun_lahir_ayah TEXT,
-            status_ayah TEXT DEFAULT 'Masih Hidup',
-            pendidikan_ayah TEXT,
-            pekerjaan_ayah TEXT,
-            penghasilan_ayah TEXT,
-            nik_ibu TEXT,
-            nama_ibu TEXT,
-            tahun_lahir_ibu TEXT,
-            status_ibu TEXT DEFAULT 'Masih Hidup',
-            pendidikan_ibu TEXT,
-            pekerjaan_ibu TEXT,
-            penghasilan_ibu TEXT,
-            no_hp_orang_tua_wa TEXT NOT NULL,
-            nama_wali TEXT,
-            hubungan_wali TEXT,
-            no_hp_wali TEXT,
-            no_kip TEXT,
-            no_kis_pkh TEXT,
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            sync_status TEXT NOT NULL DEFAULT 'SYNCED',
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("siswa_detail", [
+        { name: "siswa_id", type: "text", required: true },
+        { name: "nik", type: "text", required: true },
+        { name: "no_kk", type: "text", required: true },
+        { name: "tempat_lahir", type: "text", required: true },
+        { name: "tanggal_lahir", type: "text", required: true },
+        { name: "agama", type: "text" },
+        { name: "anak_ke", type: "number" },
+        { name: "jumlah_saudara", type: "number" },
+        { name: "alamat_jalan", type: "text", required: true },
+        { name: "rt", type: "text" },
+        { name: "rw", type: "text" },
+        { name: "desa_kelurahan", type: "text", required: true },
+        { name: "kecamatan", type: "text", required: true },
+        { name: "kabupaten_kota", type: "text", required: true },
+        { name: "kode_pos", type: "text" },
+        { name: "status_tempat_tinggal", type: "text" },
+        { name: "nik_ayah", type: "text" },
+        { name: "nama_ayah", type: "text" },
+        { name: "tahun_lahir_ayah", type: "text" },
+        { name: "status_ayah", type: "text" },
+        { name: "pendidikan_ayah", type: "text" },
+        { name: "pekerjaan_ayah", type: "text" },
+        { name: "penghasilan_ayah", type: "text" },
+        { name: "nik_ibu", type: "text" },
+        { name: "nama_ibu", type: "text" },
+        { name: "tahun_lahir_ibu", type: "text" },
+        { name: "status_ibu", type: "text" },
+        { name: "pendidikan_ibu", type: "text" },
+        { name: "pekerjaan_ibu", type: "text" },
+        { name: "penghasilan_ibu", type: "text" },
+        { name: "no_hp_orang_tua_wa", type: "text", required: true },
+        { name: "nama_wali", type: "text" },
+        { name: "hubungan_wali", type: "text" },
+        { name: "no_hp_wali", type: "text" },
+        { name: "no_kip", type: "text" },
+        { name: "no_kis_pkh", type: "text" },
+        { name: "is_deleted", type: "number" },
+        { name: "sync_status", type: "text" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS anggota_rombel (
-            id TEXT PRIMARY KEY,
-            siswa_id TEXT NOT NULL,
-            kelas_id TEXT NOT NULL,
-            tahun_ajaran_id TEXT NOT NULL,
-            nomor_absen INTEGER NOT NULL,
-            status_keanggotaan TEXT NOT NULL DEFAULT 'AKTIF',
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("anggota_rombel", [
+        { name: "siswa_id", type: "text", required: true },
+        { name: "kelas_id", type: "text", required: true },
+        { name: "tahun_ajaran_id", type: "text", required: true },
+        { name: "nomor_absen", type: "number", required: true },
+        { name: "status_keanggotaan", type: "text", required: true },
+        { name: "is_deleted", type: "number" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS kkm_mapel (
-            id TEXT PRIMARY KEY,
-            mapel_id TEXT NOT NULL,
-            tingkat_kelas INTEGER NOT NULL,
-            tahun_ajaran_id TEXT NOT NULL,
-            nilai_kkm INTEGER NOT NULL DEFAULT 75,
-            bobot_harian INTEGER NOT NULL DEFAULT 2,
-            bobot_ulangan INTEGER NOT NULL DEFAULT 2,
-            bobot_ujian_akhir INTEGER NOT NULL DEFAULT 1,
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("kkm_mapel", [
+        { name: "mapel_id", type: "text", required: true },
+        { name: "tingkat_kelas", type: "number", required: true },
+        { name: "tahun_ajaran_id", type: "text", required: true },
+        { name: "nilai_kkm", type: "number", required: true },
+        { name: "bobot_harian", type: "number", required: true },
+        { name: "bobot_ulangan", type: "number", required: true },
+        { name: "bobot_ujian_akhir", type: "number", required: true },
+        { name: "is_deleted", type: "number" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS komponen_nilai (
-            id TEXT PRIMARY KEY,
-            penugasan_id TEXT NOT NULL,
-            aspek TEXT NOT NULL,
-            kategori TEXT NOT NULL,
-            judul TEXT NOT NULL,
-            tanggal_input TEXT NOT NULL,
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            sync_status TEXT NOT NULL DEFAULT 'SYNCED',
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("komponen_nilai", [
+        { name: "penugasan_id", type: "text", required: true },
+        { name: "aspek", type: "text", required: true },
+        { name: "kategori", type: "text", required: true },
+        { name: "judul", type: "text", required: true },
+        { name: "tanggal_input", type: "text", required: true },
+        { name: "is_deleted", type: "number" },
+        { name: "sync_status", type: "text" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS nilai_siswa (
-            id TEXT PRIMARY KEY,
-            komponen_id TEXT NOT NULL,
-            siswa_id TEXT NOT NULL,
-            skor REAL NOT NULL,
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            sync_status TEXT NOT NULL DEFAULT 'SYNCED',
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("nilai_siswa", [
+        { name: "komponen_id", type: "text", required: true },
+        { name: "siswa_id", type: "text", required: true },
+        { name: "skor", type: "number", required: true },
+        { name: "is_deleted", type: "number" },
+        { name: "sync_status", type: "text" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS presensi_sesi (
-            id TEXT PRIMARY KEY,
-            penugasan_id TEXT NOT NULL,
-            tanggal TEXT NOT NULL,
-            jam_ke TEXT NOT NULL,
-            materi_pokok TEXT,
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            sync_status TEXT NOT NULL DEFAULT 'SYNCED',
-            created_at INTEGER NOT NULL,
-            updated_at INTEGER NOT NULL
-        );
+    ensureCollection("presensi_sesi", [
+        { name: "penugasan_id", type: "text", required: true },
+        { name: "tanggal", type: "text", required: true },
+        { name: "jam_ke", type: "text", required: true },
+        { name: "materi_pokok", type: "text" },
+        { name: "is_deleted", type: "number" },
+        { name: "sync_status", type: "text" },
+        { name: "created_at", type: "number" },
+        { name: "updated_at", type: "number" }
+    ]);
 
-        CREATE TABLE IF NOT EXISTS presensi_detail (
-            id TEXT PRIMARY KEY,
-            sesi_id TEXT NOT NULL,
-            siswa_id TEXT NOT NULL,
-            status_kehadiran TEXT NOT NULL,
-            catatan TEXT,
-            is_deleted INTEGER NOT NULL DEFAULT 0,
-            sync_status TEXT NOT NULL DEFAULT 'SYNCED',
-            updated_at INTEGER NOT NULL
-        );
-    `).execute();
+    ensureCollection("presensi_detail", [
+        { name: "sesi_id", type: "text", required: true },
+        { name: "siswa_id", type: "text", required: true },
+        { name: "status_kehadiran", type: "text", required: true },
+        { name: "catatan", type: "text" },
+        { name: "is_deleted", type: "number" },
+        { name: "sync_status", type: "text" },
+        { name: "updated_at", type: "number" }
+    ]);
 
     // 1.2 Semai Data Awal jika master_guru belum ada
     const countCheck = new DynamicModel({ total: 0 });
@@ -208,14 +210,14 @@ onBootstrap((e) => {
 
         // 1. Tahun Ajaran
         $app.db().newQuery(`
-            INSERT INTO tahun_ajaran VALUES (
+            INSERT INTO tahun_ajaran (id, tahun, semester, is_active, tanggal_mulai, tanggal_selesai, is_deleted, updated_at) VALUES (
                 'ta_2026_ganjil', '2026/2027', 'GANJIL', 1, '2026-07-15', '2026-12-20', 0, {:now}
             )
         `).bind({ now }).execute();
 
         // 2. Master Guru (Admin & Guru Wali Kelas)
         $app.db().newQuery(`
-            INSERT INTO master_guru VALUES 
+            INSERT INTO master_guru (id, nip, npk, nuptk, nik, nama_lengkap, gelar_depan, gelar_belakang, jenis_kelamin, no_wa, status_kepegawaian, role, username, password, is_deleted, updated_at) VALUES 
             (
                 'guru_admin', '198001012005011001', 'NPK101', 'NUPTK101', '3301010101800001',
                 'Drs. H. Maimun Zubair, M.Pd.', 'Drs. H.', 'M.Pd.', 'L', '081234567890',
@@ -230,7 +232,7 @@ onBootstrap((e) => {
 
         // 3. Master Kelas
         $app.db().newQuery(`
-            INSERT INTO master_kelas VALUES 
+            INSERT INTO master_kelas (id, tingkat, nama_rombel, wali_kelas_guru_id, is_deleted, updated_at) VALUES 
             ('kelas_7a', 7, '7A', 'guru_ahmad', 0, {:now}),
             ('kelas_7b', 7, '7B', '', 0, {:now}),
             ('kelas_8a', 8, '8A', '', 0, {:now})
@@ -238,7 +240,7 @@ onBootstrap((e) => {
 
         // 4. Master Mapel
         $app.db().newQuery(`
-            INSERT INTO master_mapel VALUES 
+            INSERT INTO master_mapel (id, kode_mapel, nama_mapel, kelompok, is_deleted, updated_at) VALUES 
             ('mapel_pai', 'PAI-07', 'Pendidikan Agama Islam', 'A', 0, {:now}),
             ('mapel_bar', 'BAR-07', 'Bahasa Arab', 'A', 0, {:now}),
             ('mapel_mat', 'MAT-07', 'Matematika', 'A', 0, {:now}),
@@ -247,7 +249,7 @@ onBootstrap((e) => {
 
         // 5. Penugasan Guru
         $app.db().newQuery(`
-            INSERT INTO penugasan_guru VALUES 
+            INSERT INTO penugasan_guru (id, guru_id, mapel_id, kelas_id, tahun_ajaran_id, jadwal_json, is_deleted, updated_at) VALUES 
             ('penugasan_1', 'guru_admin', 'mapel_pai', 'kelas_7a', 'ta_2026_ganjil', '[{"hari":1,"jamKe":"1-2","mulai":"07:30"}]', 0, {:now}),
             ('penugasan_2', 'guru_ahmad', 'mapel_bar', 'kelas_7a', 'ta_2026_ganjil', '[{"hari":2,"jamKe":"3-4","mulai":"09:00"}]', 0, {:now}),
             ('penugasan_3', 'guru_ahmad', 'mapel_bar', 'kelas_7b', 'ta_2026_ganjil', '[{"hari":3,"jamKe":"1-2","mulai":"07:30"}]', 0, {:now})
@@ -265,7 +267,7 @@ onBootstrap((e) => {
 
         for (let s of siswaList) {
             $app.db().newQuery(`
-                INSERT INTO siswa_core VALUES 
+                INSERT INTO siswa_core (id, nis_lokal, nisn, nama_lengkap, jenis_kelamin, foto_file_name, status_siswa, is_deleted, sync_status, updated_at) VALUES 
                 ({:id}, {:nis}, {:nisn}, {:nama}, {:jk}, {:foto}, 'AKTIF', 0, 'SYNCED', {:now})
             `).bind({ id: s.id, nis: s.nis, nisn: s.nisn, nama: s.nama, jk: s.jk, foto: s.foto, now }).execute();
 
@@ -284,14 +286,14 @@ onBootstrap((e) => {
             `).bind({ id: s.id, nis: s.nis, nama: s.nama, noWa: s.noWa, now }).execute();
 
             $app.db().newQuery(`
-                INSERT INTO anggota_rombel VALUES 
+                INSERT INTO anggota_rombel (id, siswa_id, kelas_id, tahun_ajaran_id, nomor_absen, status_keanggotaan, is_deleted, updated_at) VALUES 
                 ('rombel_' || {:id}, {:id}, 'kelas_7a', 'ta_2026_ganjil', {:absen}, 'AKTIF', 0, {:now})
             `).bind({ id: s.id, absen: s.absen, now }).execute();
         }
 
         // 7. KKM Mapel (Default KKM 75)
         $app.db().newQuery(`
-            INSERT INTO kkm_mapel VALUES 
+            INSERT INTO kkm_mapel (id, mapel_id, tingkat_kelas, tahun_ajaran_id, nilai_kkm, bobot_harian, bobot_ulangan, bobot_ujian_akhir, is_deleted, updated_at) VALUES 
             ('kkm_pai_7', 'mapel_pai', 7, 'ta_2026_ganjil', 75, 2, 2, 1, 0, {:now}),
             ('kkm_bar_7', 'mapel_bar', 7, 'ta_2026_ganjil', 75, 2, 2, 1, 0, {:now}),
             ('kkm_mat_7', 'mapel_mat', 7, 'ta_2026_ganjil', 75, 2, 2, 1, 0, {:now})
@@ -299,14 +301,14 @@ onBootstrap((e) => {
 
         // 8. Komponen Nilai Awal
         $app.db().newQuery(`
-            INSERT INTO komponen_nilai VALUES 
+            INSERT INTO komponen_nilai (id, penugasan_id, aspek, kategori, judul, tanggal_input, is_deleted, sync_status, updated_at) VALUES 
             ('komp_pai_1', 'penugasan_1', 'KI3', 'UH', 'PH 1 - Akidah Akhlak', '2026-08-10', 0, 'SYNCED', {:now}),
             ('komp_pai_2', 'penugasan_1', 'KI4', 'PRAKTIK', 'Praktik Bersuci (Wudhu)', '2026-08-15', 0, 'SYNCED', {:now})
         `).bind({ now }).execute();
 
         // 9. Nilai Siswa Awal
         $app.db().newQuery(`
-            INSERT INTO nilai_siswa VALUES 
+            INSERT INTO nilai_siswa (id, komponen_id, siswa_id, skor, is_deleted, sync_status, updated_at) VALUES 
             ('nilai_1_1', 'komp_pai_1', 'siswa_001', 88.0, 0, 'SYNCED', {:now}),
             ('nilai_1_2', 'komp_pai_1', 'siswa_002', 92.0, 0, 'SYNCED', {:now}),
             ('nilai_2_1', 'komp_pai_2', 'siswa_001', 85.0, 0, 'SYNCED', {:now}),

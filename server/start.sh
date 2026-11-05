@@ -15,6 +15,7 @@ nohup pocketbase serve \
     --http "0.0.0.0:8090" > "$SERVER_DIR/server.log" 2>&1 &
 
 echo $! > "$SERVER_DIR/server.pid"
+disown $!
 sleep 2
 
 if kill -0 $(cat server.pid) 2>/dev/null; then
@@ -26,9 +27,13 @@ if kill -0 $(cat server.pid) 2>/dev/null; then
     LAN_IP=$(python3 -c "import socket; s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM); s.connect(('8.8.8.8', 80)); print(s.getsockname()[0]); s.close()" 2>/dev/null || echo "192.168.x.x")
     echo "   - Dari HP lain di Wi-Fi sama   : http://${LAN_IP}:8090"
     echo "=========================================================="
-    echo "👤 Kredensial Uji Coba Default:"
-    echo "   1. Akun Admin  : Username = admin  | Password = admin123"
-    echo "   2. Akun Guru   : Username = ahmad  | Password = guru123"
+    echo "🔑 Kredensial Login:"
+    echo "   A. Dashboard Web PocketBase (http://127.0.0.1:8090/_/):"
+    echo "      - Email    : admin@simrth.local"
+    echo "      - Password : admin123456"
+    echo "   B. Aplikasi Android SIMRTH (di HP):"
+    echo "      - Admin : Username = admin  | Password = admin123"
+    echo "      - Guru  : Username = ahmad  | Password = guru123"
     echo "=========================================================="
     echo "Log server dapat dipantau via: tail -f $SERVER_DIR/server.log"
 else
